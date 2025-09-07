@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <h1>¡Hola, {{ usuario.nombre|capitalize }}!</h1>
+
+    <h2>Citas Disponibles</h2>
+    <div class="row">
+        {% for cita in citas %}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <p class="card-text">"{{ cita.cita }}" - por <strong>{{ cita.autor.split(' ')[0]|capitalize }} {{
+                            cita.autor.split(' ')[1]|capitalize }}</strong></p>
+                    <p class="text-muted small">Publicado el: {{ cita.creado_en | format_date }}</p>
+                    <hr>
+                    <a href="/citas/agregar_favorito/{{ cita.id }}" class="btn btn-primary btn-sm me-2">Añadir a
+                        Favoritos</a>
+                    {% if cita.autor_id == session['usuario_id'] %}
+                    <a href="/citas/editar/{{ cita.id }}" class="btn btn-warning btn-sm me-2">Editar</a>
+                    <a href="/citas/borrar/{{ cita.id }}" class="btn btn-danger btn-sm">Borrar</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-12">
+            <p class="alert alert-info">No hay citas disponibles para mostrar.</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    <h2 class="mt-5">Mis Citas Favoritas</h2>
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-success">
+                <tr>
+                    <th>Cita</th>
+                    <th>Autor</th>
+                    <th>Fecha de publicación</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for favorita in favoritos %}
+                <tr>
+                    <td>"{{ favorita.cita }}"</td>
+                    <td>{{ favorita.autor.split(' ')[0]|capitalize }} {{ favorita.autor.split(' ')[1]|capitalize }}</td>
+                    <td>{{ favorita.creado_en | format_date }}</td>
+                    <td>
+                        <a href="/citas/remover_favorito/{{ favorita.id }}"
+                            class="btn btn-outline-danger btn-sm">Remover</a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="4" class="text-center">No tienes citas favoritas aún.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <h2 class="mt-5">Agregar Nueva Cita</h2>
+    {% with messages = get_flashed_messages(category_filter=['cita']) %}
+    {% if messages %}
+    <ul class="alert alert-danger">
+        {% for message in messages %}
+        <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+    <form action="/citas/agregar" method="post">
+        <div class="mb-3">
+            <label for="cita" class="form-label">Escribe tu cita:</label>
+            <textarea class="form-control" id="cita" name="cita" rows="3"></textarea>
+        </div>
+        <button type="submit" class="btn btn-success">Agregar Cita</button>
+    </form>
+</div>
+{% endblock %}

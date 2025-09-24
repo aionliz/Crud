@@ -31,7 +31,7 @@ class Cita:
         """
         self.id = data['id']
         self.cita = data['cita']
-        self.autor_id = data['autor_id'] if 'autor_id' in data else None
+        self.autor_id = data['autor_id'] if 'autor_id' in data else None #
         self.usuario_id = data['usuario_id'] if 'usuario_id' in data else None
         self.creado_en = data['creado_en'] if 'creado_en' in data else None
         self.actualizado_en = data['actualizado_en'] if 'actualizado_en' in data else None
@@ -45,17 +45,6 @@ class Cita:
         resultado = connectToMySQL(cls.db).query_db(query, data)
         return resultado
 
-    @classmethod
-    def obtener_todas(cls):
-        """
-        Obtiene todas las citas de la base de datos.
-        """
-        query = "SELECT * FROM citas;"
-        resultados = connectToMySQL(cls.db).query_db(query)
-        citas = []
-        for row in resultados:
-            citas.append(cls(row))
-        return citas
 
     @classmethod
     def obtener_por_id(cls, cita_id):
@@ -68,7 +57,19 @@ class Cita:
         if not resultado:
             return None
         return cls(resultado[0])
-
+    
+    @classmethod
+    def obtener_todas(cls):
+        """
+        Obtiene todas las citas de la base de datos.
+        """
+        query = "SELECT * FROM citas;"
+        resultados = connectToMySQL(cls.db).query_db(query)
+        citas = []
+        for row in resultados:
+            citas.append(cls(row))
+        return citas
+    
     @classmethod
     def actualizar_cita(cls, data):
         """

@@ -1,8 +1,7 @@
 from base.models.cita_model import Cita
 from base.models.usuario_model import Usuario
 from flask import render_template, redirect, request, session, Blueprint, flash
-bp = Blueprint('citas', __name__, url_prefix='/citas')
-bp = Blueprint('citas', __name__, url_prefix='/citas')
+
 
 # Controlador de Citas
 # Todas las rutas relacionadas con la gestión de citas y favoritos
@@ -103,7 +102,7 @@ def dashboard():
     citas_no_favoritas = Cita.obtener_citas_no_favoritas(session['usuario_id'])
     citas_favoritas = Cita.obtener_favoritos_de_usuario(session['usuario_id'])
     return render_template('dashboard.html', usuario=usuario,
-                           citas=citas_no_favoritas, favoritos=citas_favoritas)
+                            citas=citas_no_favoritas, favoritos=citas_favoritas)
 
 
 @bp.route('/agregar_favorito/<int:cita_id>')
